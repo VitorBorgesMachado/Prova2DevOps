@@ -43,159 +43,132 @@ Prova2_DevOps/
 
 ## Como executar
 
-Primeiro, clone o repositório:
-
+Clone o repositório:
 
 git clone URL_DO_REPOSITORIO
 
-
-Depois entre na pasta:
-
+Entre na pasta do projeto:
 
 cd Prova2_DevOps
 
-
-Para iniciar o projeto:
-
+Para iniciar todos os serviços:
 
 docker compose up --build
 
-
-Se quiser deixar os containers rodando em segundo plano:
-
+Para iniciar em segundo plano:
 
 docker compose up --build -d
 
+## O projeto possui três serviços:
 
-## Tabela inventory
+PostgreSQL
+API NestJS
+Front React
+Banco de dados
 
-A tabela utilizada no projeto é a inventory.
+## O banco utilizado é o PostgreSQL.
 
-| Campo         | Descrição             |
-| ------------- | --------------------- |
-|  id           | ID do item            |
-|  item_code    | Código do item        |
-|  description  | Descrição do item     |
-|  quantit      | Quantidade disponível |
-|  min_stock    | Estoque mínimo        |
+Tabela:
 
-Exemplo:
+inventory
 
+Campo	        Descrição
+id	            Identificador do item
+item_code	    Código do item
+description	    Descrição
+quantity	    Quantidade em estoque
+min_stock	    Estoque mínimo
 
-{
-  "id": 1,
-  "item_code": "PROD001",
-  "description": "Teclado USB",
-  "quantity": 25,
-  "min_stock": 10
-}
+Os dados do PostgreSQL são armazenados em um volume nomeado para garantir a persistência.
 
+## API
+
+A API foi desenvolvida com NestJS e possui um CRUD para a tabela inventory.
 
 ## Endpoints
+Método	   Endpoint	        Descrição
+GET	       /inventory    	Lista todos os itens
+GET	       /inventory/:id	Busca um item
+POST	   /inventory	    Cria um item
+PATCH	   /inventory/:id	Atualiza um item
+DELETE	   /inventory/:id	Remove um item
 
-A API possui os seguintes endpoints:
-
-| Método | Endpoint         | Descrição        |
-| ------ | ---------------- | ---------------- |
-| GET    |  /inventory      | Lista os itens   |
-| GET    |  /inventory/:id  | Busca um item    |
-| POST   |  /inventory      | Cadastra um item |
-| PATCH  |  /inventory/:id  | Altera um item   |
-| DELETE |  /inventory/:id  | Exclui um item   |
-
-## Exemplos
-
-### Listar os itens
+Exemplos
 
 GET /inventory
-
-Resposta:
-
-
 [
   {
     "id": 1,
-    "item_code": "PROD001",
+    "item_code": "ITEM001",
     "description": "Teclado USB",
-    "quantity": 25,
-    "min_stock": 10
+    "quantity": 20,
+    "min_stock": 5
   }
 ]
-
-
-### Buscar um item
-
-GET /inventory/1
-
-Resposta:
-
-
-{
-  "id": 1,
-  "item_code": "PROD001",
-  "description": "Teclado USB",
-  "quantity": 25,
-  "min_stock": 10
-}
-
-
-### Cadastrar um item
-
 POST /inventory
-
-Enviar:
-
-
 {
-  "item_code": "PROD002",
+  "item_code": "ITEM002",
   "description": "Mouse USB",
   "quantity": 15,
   "min_stock": 5
 }
-
-
-### Alterar um item
-
 PATCH /inventory/1
-
-Enviar:
-
-
 {
   "quantity": 30
 }
 
+## Swagger
 
-### Excluir um item
+A API possui Swagger para testar os endpoints.
 
-DELETE /inventory/1
+http://localhost:3000/api
 
-Remove o item com o ID informado.
+## Front-end
 
-## Como parar os containers
+O Front-end foi desenvolvido com React.
 
-Para parar os containers:
+A tela principal possui uma tabela com os itens do inventário obtidos através do endpoint:
 
+GET /inventory
+
+O Front-end se comunica com a API através da rede interna do Docker Compose.
+
+## Docker
+
+O projeto possui Dockerfiles para:
+
+API NestJS
+Front React
+
+O Docker Compose configura:
+
+PostgreSQL
+API
+Front
+Volume do PostgreSQL
+Rede API + PostgreSQL
+Rede API + Front
+Variáveis de ambiente
+
+As informações de conexão com o PostgreSQL são configuradas através de variáveis de ambiente.
+
+## Exemplo:
+
+DB_HOST=postgres
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_NAME=inventory
+Como parar os containers
+
+Para parar os serviços:
 
 docker compose down
 
-
-Para parar e remover também os volumes:
-
+Para parar os serviços e remover os volumes:
 
 docker compose down -v
 
+O comando docker compose down -v remove os dados armazenados no volume do PostgreSQL.
 
-> O comando "docker compose down -v" apaga os dados armazenados no volume do banco.
 
-## Docker Compose
-
-O projeto possui três serviços:
-
-* PostgreSQL
-* API NestJS
-* Front React
-
-A API se comunica com o PostgreSQL e o Front-end se comunica com a API.
-
-O banco utiliza um volume para manter os dados quando os containers forem reiniciados.
