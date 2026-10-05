@@ -4,7 +4,7 @@ services:
     container_name: postgres
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: Vitorborges24@
       POSTGRES_DB: inventory
     ports:
       - "5432:5432"
