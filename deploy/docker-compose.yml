@@ -26,9 +26,23 @@ services:
       - postgres
     networks:
       - api_db
+      - api_front
+
+  front:
+    build:
+      context: ../front
+      dockerfile: Dockerfile
+    container_name: front
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api
+    networks:
+      - api_front
 
 volumes:
   postgres_data:
 
 networks:
   api_db:
+  api_front:
